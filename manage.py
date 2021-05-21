@@ -1,5 +1,6 @@
 """项目的入口启动文件"""
-
+from flask.ext.wtf import CSRFProtect
+from redis import StrictRedis
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -14,6 +15,9 @@ class Config(object):
     # 不对数据库进行追踪修改
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # redis的配置
+    REDIS_HOST = "127.0.0.1"
+    REDIS_PORT = 6379
 
 # 从类中加载配置
 app.config.from_object(Config)
@@ -21,6 +25,11 @@ app.config.from_object(Config)
 # 初始化数据库
 db = SQLAlchemy(app)
 
+# 设置redis存储对象
+redis_store = StrictRedis(host=Config.REDIS_HOST,port=Config.REDIS_PORT)
+
+# 开启挡墙项目的保护,只做服务器的验证
+CSRFProtect(app)
 
 @app.route("/")
 def index():
