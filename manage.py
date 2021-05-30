@@ -1,10 +1,11 @@
 """项目的入口启动文件"""
-from flask.ext.wtf import CSRFProtect
-from redis import StrictRedis
-from flask import Flask, session
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.wtf import CSRFProtect  # 服务器的请求保护
+from redis import StrictRedis  # 指定redis的存储地址
+from flask import Flask, session  # 使用session存储数据
+from flask.ext.sqlalchemy import SQLAlchemy  # 数据库的配置
 # 可以来指定session的保存位置
 from flask_session import Session
+from flask_script import Manager  # 使用命令行来控制程序的运行
 
 app = Flask(__name__)
 
@@ -50,6 +51,8 @@ CSRFProtect(app)
 # 设置session保存指定位置(这句话必须设置,不让redis数据库中找不到添加的数据
 Session(app)
 
+manager = Manager(app)
+
 
 @app.route("/")
 def index():
@@ -60,4 +63,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run()
+    manager.run()
